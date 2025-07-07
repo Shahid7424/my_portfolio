@@ -113,7 +113,7 @@ export default function Hero() {
               </a>
 
               <a
-                href="https://shahid7424.github.io/"
+                href="https://my-portfolio-one-xi-46.vercel.app/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-2 text-green-400 hover:underline"

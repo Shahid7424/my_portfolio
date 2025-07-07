@@ -1,9 +1,21 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight, ExternalLink, Github } from "lucide-react";
 
 export default function Projects() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [cardsPerView, setCardsPerView] = useState(3);
+
+  useEffect(() => {
+    const updateCardsPerView = () => {
+      if (window.innerWidth < 768) setCardsPerView(1);
+      else if (window.innerWidth < 1024) setCardsPerView(2);
+      else setCardsPerView(3);
+    };
+    updateCardsPerView();
+    window.addEventListener("resize", updateCardsPerView);
+    return () => window.removeEventListener("resize", updateCardsPerView);
+  }, []);
 
   const projects = [
     {
@@ -77,32 +89,27 @@ export default function Projects() {
       liveUrl: "https://quantisys-app.vercel.app/",
       category: "B2B Marketing"
     },
-   
   ];
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex + 3 >= projects.length ? 0 : prevIndex + 3
+      prevIndex + 1 >= projects.length - cardsPerView + 1 ? 0 : prevIndex + 1
     );
   };
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex - 3 < 0 ? Math.max(projects.length - 3, 0) : prevIndex - 3
+      prevIndex - 1 < 0 ? Math.max(projects.length - cardsPerView, 0) : prevIndex - 1
     );
   };
 
-  const goToSlide = (index) => {
-    setCurrentIndex(index);
-  };
+  const goToSlide = (index) => setCurrentIndex(index);
 
   return (
     <section className="py-12 bg-gradient-to-br from-slate-50 to-blue-50 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">
-            Featured Projects
-          </h2>
+          <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Projects</h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Discover my latest work showcasing innovative solutions across various technologies and industries
           </p>
@@ -112,12 +119,13 @@ export default function Projects() {
           <div className="overflow-hidden">
             <div
               className="flex transition-transform duration-500 ease-in-out"
-              style={{ transform: `translateX(-${(currentIndex * 100) / 3}%)` }}
+              style={{ transform: `translateX(-${(currentIndex * 100) / projects.length}%)`, width: `${(projects.length / cardsPerView) * 100}%` }}
             >
               {projects.map((project, index) => (
                 <div
                   key={index}
                   className="w-full sm:w-1/2 lg:w-1/3 flex-shrink-0 px-4"
+                  style={{ width: `${100 / projects.length}%` }}
                 >
                   <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 h-full min-h-[650px] flex flex-col">
                     <div className="p-8 flex flex-col flex-grow justify-between">
@@ -125,12 +133,8 @@ export default function Projects() {
                         <span className="inline-block px-3 py-1 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full mb-3">
                           {project.category}
                         </span>
-                        <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                          {project.title}
-                        </h3>
-                        <p className="text-gray-600 leading-relaxed mb-6">
-                          {project.description}
-                        </p>
+                        <h3 className="text-2xl font-bold text-gray-900 mb-2">{project.title}</h3>
+                        <p className="text-gray-600 leading-relaxed mb-6">{project.description}</p>
 
                         <div className="mb-6">
                           <h4 className="text-sm font-semibold text-gray-700 mb-3">Technologies Used</h4>
@@ -159,7 +163,6 @@ export default function Projects() {
                         </div>
                       </div>
 
-                      {/* Button Section Bottom Left/Right */}
                       <div className="flex justify-between items-center gap-4 mt-8">
                         <a
                           href={project.githubUrl}
@@ -189,7 +192,6 @@ export default function Projects() {
             </div>
           </div>
 
-          {/* Navigation Arrows */}
           <button
             onClick={prevSlide}
             className="absolute -left-6 top-1/2 transform -translate-y-1/2 bg-white z-10 rounded-full p-2 shadow hover:shadow-md border border-gray-200"
@@ -206,32 +208,25 @@ export default function Projects() {
           </button>
         </div>
 
-        {/* Dots Indicator */}
         <div className="flex justify-center mt-8 space-x-2">
-          {Array.from({ length: Math.ceil(projects.length / 3) }).map(
-            (_, index) => (
-              <button
-                key={index}
-                onClick={() => goToSlide(index * 3)}
-                className={`h-3 rounded-full transition-all duration-200 ${
-                  currentIndex === index * 3
-                    ? "bg-blue-600 w-8"
-                    : "bg-gray-300 hover:bg-gray-400 w-3"
-                }`}
-                aria-label={`Go to project set ${index + 1}`}
-              />
-            )
-          )}
+          {Array.from({ length: projects.length - cardsPerView + 1 }).map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`h-3 rounded-full transition-all duration-200 ${
+                currentIndex === index
+                  ? "bg-blue-600 w-8"
+                  : "bg-gray-300 hover:bg-gray-400 w-3"
+              }`}
+              aria-label={`Go to project set ${index + 1}`}
+            />
+          ))}
         </div>
 
-        {/* Counter */}
         <div className="text-center mt-6">
           <span className="text-sm text-gray-500">
-            {Math.min(currentIndex + 1, projects.length)}–{Math.min(
-              currentIndex + 3,
-              projects.length
-            )}{" "}
-            of {projects.length} projects
+            {Math.min(currentIndex + 1, projects.length)}–
+            {Math.min(currentIndex + cardsPerView, projects.length)} of {projects.length} projects
           </span>
         </div>
       </div>

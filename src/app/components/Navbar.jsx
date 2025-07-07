@@ -73,7 +73,7 @@ export default function Navbar() {
   };
 
   const handleWhatsAppClick = () => {
-    const phoneNumber = "8948681079";
+    const phoneNumber = "+918948681079";
     const whatsappUrl = `https://wa.me/${phoneNumber}`;
     window.open(whatsappUrl, '_blank');
   };
