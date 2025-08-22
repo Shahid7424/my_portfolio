@@ -66,8 +66,8 @@ export default function Skills() {
       skills: [
         { name: "AWS EC2", level: 70, color: "bg-orange-500" },
         { name: "AWS S3", level: 75, color: "bg-orange-600" },
-        { name: "Vercel", level: 95, color: "bg-blue-600" },
-        { name: "Hostinger", level: 50, color: "bg-black" },
+        { name: "Vercel", level: 100, color: "bg-blue-600" },
+        { name: "Hostinger", level: 90, color: "bg-black" },
       ],
     },
     {

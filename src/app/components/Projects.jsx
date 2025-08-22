@@ -71,8 +71,8 @@ export default function Projects() {
        "Quality Assurance",
       ],
       githubUrl: "#",
-      liveUrl: "https://example.com/demo",
-      category: "Education"
+      liveUrl: "https://digitalmarketmart.com/",
+      category: "E-commerce"
     },
     {
       title: "Quantisys",
