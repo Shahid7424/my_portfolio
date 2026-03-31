@@ -1,235 +1,404 @@
 "use client";
-import { useState, useEffect } from "react";
-import { ChevronLeft, ChevronRight, ExternalLink, Github } from "lucide-react";
+import { useState, useRef } from "react";
+import { ExternalLink, Github, Briefcase, Plane, ShoppingCart, Globe, BarChart2 } from "lucide-react";
 
-export default function Projects() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [cardsPerView, setCardsPerView] = useState(3);
+const categoryMeta = {
+  "Full Stack":      { gradient: "from-violet-600 via-purple-500 to-indigo-600",  glow: "#7c3aed", icon: Globe },
+  "E-commerce":      { gradient: "from-rose-500 via-pink-500 to-orange-500",       glow: "#f43f5e", icon: ShoppingCart },
+  "Productivity":    { gradient: "from-emerald-500 via-teal-500 to-cyan-500",      glow: "#10b981", icon: BarChart2 },
+  "B2B Marketing":   { gradient: "from-amber-500 via-orange-500 to-yellow-500",    glow: "#f59e0b", icon: BarChart2 },
+  "Job Consultancy": { gradient: "from-sky-500 via-blue-600 to-indigo-500",        glow: "#0ea5e9", icon: Briefcase },
+  "Travel Tech":     { gradient: "from-fuchsia-500 via-purple-600 to-blue-600",    glow: "#d946ef", icon: Plane },
+};
 
-  useEffect(() => {
-    const updateCardsPerView = () => {
-      if (window.innerWidth < 768) setCardsPerView(1);
-      else if (window.innerWidth < 1024) setCardsPerView(2);
-      else setCardsPerView(3);
-    };
-    updateCardsPerView();
-    window.addEventListener("resize", updateCardsPerView);
-    return () => window.removeEventListener("resize", updateCardsPerView);
-  }, []);
+const projects = [
+  {
+    title: "ReservationKart.com",
+    description: "A comprehensive full-stack airline booking system with advanced filtering and state management capabilities.",
+    technologies: ["Next.js", "MongoDB", "TailwindCSS", "API Routes"],
+    features: ["Full-stack booking system", "Dynamic routes & server-side API", "Advanced booking filters", "Responsive UX design"],
+    githubUrl: "https://github.com/AINSoftwareSolution/airline-site.git",
+    liveUrl: "http://reservationkart.com/",
+    category: "Full Stack",
+  },
+  {
+    title: "Vehicle Motors Buy & Sell",
+    description: "A scalable vehicle marketplace platform with cloud infrastructure and SEO optimization.",
+    technologies: ["Next.js", "AWS S3", "AWS EC2", "SSR"],
+    features: ["Secure media on AWS S3", "Deployed on AWS EC2", "Server-side rendering for SEO", "Optimised loading speeds"],
+    githubUrl: "https://github.com/AINSoftwareSolution/motors.git",
+    liveUrl: "https://motors-mocha.vercel.app/",
+    category: "E-commerce",
+  },
+  {
+    title: "EarthconnTravels.com",
+    description: "A modern travel portal with real-time collaboration features and intuitive design for seamless travel planning.",
+    technologies: ["Next.js", "TailwindCSS", "MongoDB", "TypeScript", "Aceternity UI"],
+    features: ["Product Development", "Digital Modernization", "Technology Consulting", "Advanced analytics"],
+    githubUrl: "https://github.com/ainsoftware690/ain_software.git",
+    liveUrl: "https://www.earthconntravels.com/",
+    category: "Productivity",
+  },
+  {
+    title: "DigitalMarketMart.com",
+    description: "Your go-to online store for books, eBooks, healthcare items, and stylish clothing. Easy, affordable, quality-assured.",
+    technologies: ["JavaScript", "Bootstrap", "MySQL", "PHP", "Hostinger"],
+    features: ["Wide Product Range", "User-Friendly Interface", "Affordable Prices", "Quality Assurance"],
+    githubUrl: "#",
+    liveUrl: "https://digitalmarketmart.com/",
+    category: "E-commerce",
+  },
+  {
+    title: "Quantisys",
+    description: "Cutting-edge B2B solutions empowering travel & tourism businesses in a dynamic, innovation-driven marketplace.",
+    technologies: ["Next.js", "TailwindCSS", "TypeScript", "Vercel", "GitHub"],
+    features: ["Cutting-edge B2B Solutions", "Empowering Travel Businesses", "Modern Travel Technology", "Industry Growth"],
+    githubUrl: "https://github.com/AINSoftwareSolution/quantisys-app.git",
+    liveUrl: "https://quantisys-app.vercel.app/",
+    category: "B2B Marketing",
+  },
+  {
+    title: "ShadowRecruiter.com",
+    description: "An intelligent job consultancy platform connecting top talent with leading companies via smart matching algorithms.",
+    technologies: ["Next.js", "Node.js", "PostgreSQL", "TailwindCSS", "Prisma"],
+    features: ["AI-powered talent matching", "Recruiter & candidate dashboards", "Smart job recommendations", "Real-time application tracking"],
+    githubUrl: "#",
+    liveUrl: "https://shadowrecruiter.com/",
+    category: "Job Consultancy",
+  },
+  {
+    title: "Travelocare.com",
+    description: "Next-gen flight ticket booking app with real-time fare tracking, multi-city search, and personalized travel care.",
+    technologies: ["Next.js", "React", "TailwindCSS", "Amadeus API", "Vercel"],
+    features: ["Real-time flight search & booking", "Multi-city & round-trip planning", "Live fare alerts", "Personalised travel picks"],
+    githubUrl: "#",
+    liveUrl: "https://travelocare.com/",
+    category: "Travel Tech",
+  },
+];
 
-  const projects = [
-    {
-      title: "ReservationKart.com",
-      description: "A comprehensive full-stack airline booking system with advanced filtering and state management capabilities.",
-      technologies: ["Next.js", "MongoDB", "TailwindCSS", "API Routes"],
-      features: [
-        "Built full-stack booking system with modern tech stack",
-        "Implemented dynamic routes and server-side API",
-        "Advanced booking filters and state management",
-        "Responsive design with optimal user experience"
-      ],
-      githubUrl: "https://github.com/AINSoftwareSolution/airline-site.git",
-      liveUrl: "http://reservationkart.com/",
-      category: "Full Stack"
-    },
-    {
-      title: "Vehicle Motors Buy & Sell",
-      description: "A scalable vehicle marketplace platform with cloud infrastructure and SEO optimization.",
-      technologies: ["Next.js", "AWS S3", "AWS EC2", "SSR"],
-      features: [
-        "Secure media storage using AWS S3",
-        "Deployed on AWS EC2 for reliability",
-        "Server-side rendering for optimal SEO",
-        "Optimized performance and loading speeds"
-      ],
-      githubUrl: "https://github.com/AINSoftwareSolution/motors.git",
-      liveUrl: "https://motors-mocha.vercel.app/",
-      category: "E-commerce"
-    },
-    {
-      title: "EarthconnTravels.com",
-      description: "A modern project management tool with real-time collaboration features and intuitive design.",
-      technologies: ["Next.js", "Tailwindcss", "MongoDb", "TypeScript", "Aceternity ui", "Vercel"],
-      features: [
-        "Product Development ",
-        "Digital Modernization",
-        "Technology Partner Consulting",
-        "Advanced analytics and reporting"
-      ],
-      githubUrl: "https://github.com/ainsoftware690/ain_software.git",
-      liveUrl: "https://www.earthconntravels.com/",
-      category: "Productivity"
-    },
-    {
-      title: "DigitalMarketMart.com",
-      description: "DigitalMarket — your go-to online store for a wide range of quality products including books, eBooks, healthcare items, and stylish clothing. Our mission is to make shopping easy.",
-      technologies: ["Javascript", "Bootstrap", "Mysql", "Php", "Hostinger"],
-      features: [
-       "Wide Product Range",
-       "User-Friendly Interface",
-       "Affordable Prices",
-       "Quality Assurance",
-      ],
-      githubUrl: "#",
-      liveUrl: "https://digitalmarketmart.com/",
-      category: "E-commerce"
-    },
-    {
-      title: "Quantisys",
-      description: "Quantisys delivers cutting-edge B2B solutions that empower travel and tourism businesses to thrive in a dynamic, innovation-driven marketplace.",
-      technologies: ["Next.js", "Tailwindcss", "TypeScript", "Vercel", "Github"],
-      features: [
-      "Cutting-edge Solutions",
-      "Empowering Travel Businesses",
-      "Modern Travel Technology",
-      "Business-to-Business Travel Services",
-      "Travel Industry Growth"
-      ],
-      githubUrl: "https://github.com/AINSoftwareSolution/quantisys-app.git",
-      liveUrl: "https://quantisys-app.vercel.app/",
-      category: "B2B Marketing"
-    },
-  ];
+/* ─── 3-D Tilt Card ─────────────────────────────────────────────────────── */
+function ProjectCard({ project }) {
+  const cardRef = useRef(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [hovered, setHovered] = useState(false);
+  const [shimmer, setShimmer] = useState({ x: 50, y: 50 });
 
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex + 1 >= projects.length - cardsPerView + 1 ? 0 : prevIndex + 1
-    );
+  const meta = categoryMeta[project.category] || categoryMeta["Full Stack"];
+  const Icon = meta.icon;
+
+  const onMove = (e) => {
+    const el = cardRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width / 2);
+    const dy = e.clientY - (r.top + r.height / 2);
+    setTilt({ x: -(dy / (r.height / 2)) * 14, y: (dx / (r.width / 2)) * 14 });
+    setShimmer({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
   };
-
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex - 1 < 0 ? Math.max(projects.length - cardsPerView, 0) : prevIndex - 1
-    );
-  };
-
-  const goToSlide = (index) => setCurrentIndex(index);
 
   return (
-    <section className="py-12 bg-gradient-to-br from-slate-50 to-blue-50 relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-900 mb-4">Featured Projects</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover my latest work showcasing innovative solutions across various technologies and industries
-          </p>
+    <div
+      ref={cardRef}
+      onMouseMove={onMove}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => { setTilt({ x: 0, y: 0 }); setHovered(false); }}
+      style={{
+        width: 340,
+        flexShrink: 0,
+        transform: hovered
+          ? `perspective(900px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale3d(1.05,1.05,1.05)`
+          : "perspective(900px) rotateX(0) rotateY(0) scale3d(1,1,1)",
+        transition: hovered ? "transform 0.08s ease-out" : "transform 0.55s cubic-bezier(.03,.98,.52,.99)",
+        willChange: "transform",
+        zIndex: hovered ? 50 : 1,
+        position: "relative",
+      }}
+    >
+      <div
+        className="relative rounded-2xl overflow-hidden border border-white/10 flex flex-col" id="projects"
+        style={{
+          height: 520,
+          background: "linear-gradient(145deg,rgba(14,14,30,0.95),rgba(8,8,22,0.98))",
+          boxShadow: hovered
+            ? `0 32px 64px -12px ${meta.glow}55, 0 0 0 1px ${meta.glow}44, inset 0 1px 0 rgba(255,255,255,0.08)`
+            : "0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)",
+          transition: "box-shadow 0.4s ease",
+        }}
+      >
+        {/* Mouse-follow shimmer */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            opacity: hovered ? 1 : 0,
+            transition: "opacity 0.3s",
+            background: `radial-gradient(circle at ${shimmer.x}% ${shimmer.y}%, ${meta.glow}28 0%, transparent 65%)`,
+          }}
+        />
+
+        {/* Top gradient bar with shimmer sweep */}
+        <div className={`h-1.5 w-full bg-gradient-to-r ${meta.gradient} relative overflow-hidden flex-shrink-0`}>
+          <div className="absolute inset-0 shimmer-sweep" />
         </div>
 
-        <div className="relative overflow-x-visible">
-          <div className="overflow-hidden">
+        {/* Background glow orb */}
+        <div
+          className="absolute -top-20 -right-20 w-56 h-56 rounded-full blur-3xl pointer-events-none"
+          style={{
+            background: `radial-gradient(circle,${meta.glow},transparent)`,
+            opacity: hovered ? 0.3 : 0.12,
+            transition: "opacity 0.4s",
+          }}
+        />
+
+        <div className="p-6 flex flex-col flex-grow relative z-10 overflow-hidden">
+          {/* Header row */}
+          <div className="flex items-start justify-between mb-4">
             <div
-              className="flex transition-transform duration-500 ease-in-out"
-              style={{ transform: `translateX(-${(currentIndex * 100) / projects.length}%)`, width: `${(projects.length / cardsPerView) * 100}%` }}
+              className={`p-2.5 rounded-xl bg-gradient-to-br ${meta.gradient}`}
+              style={{ boxShadow: `0 4px 16px ${meta.glow}55` }}
             >
-              {projects.map((project, index) => (
-                <div
-                  key={index}
-                  className="w-full sm:w-1/2 lg:w-1/3 flex-shrink-0 px-4"
-                  style={{ width: `${100 / projects.length}%` }}
+              <Icon className="w-5 h-5 text-white" />
+            </div>
+            <span
+              className="text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full border"
+              style={{ background: `${meta.glow}18`, borderColor: `${meta.glow}40`, color: meta.glow }}
+            >
+              {project.category}
+            </span>
+          </div>
+
+          {/* Title */}
+          <h3
+            className="text-lg font-black text-white mb-2 leading-tight"
+            style={{ fontFamily: "'Syne', sans-serif" }}
+          >
+            {project.title}
+          </h3>
+
+          {/* Description */}
+          <p
+            className="text-slate-400 text-sm leading-relaxed mb-4"
+            style={{
+              WebkitLineClamp: 2,
+              display: "-webkit-box",
+              WebkitBoxOrient: "vertical",
+              overflow: "hidden",
+            }}
+          >
+            {project.description}
+          </p>
+
+          {/* Tech stack */}
+          <div className="mb-4">
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Stack</p>
+            <div className="flex flex-wrap gap-1.5">
+              {project.technologies.map((t, i) => (
+                <span
+                  key={i}
+                  className="px-2.5 py-0.5 rounded-full text-xs font-medium border"
+                  style={{ background: `${meta.glow}12`, borderColor: `${meta.glow}30`, color: "#cbd5e1" }}
                 >
-                  <div className="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-gray-100 h-full min-h-[650px] flex flex-col">
-                    <div className="p-8 flex flex-col flex-grow justify-between">
-                      <div>
-                        <span className="inline-block px-3 py-1 text-xs font-semibold text-blue-600 bg-blue-100 rounded-full mb-3">
-                          {project.category}
-                        </span>
-                        <h3 className="text-2xl font-bold text-gray-900 mb-2">{project.title}</h3>
-                        <p className="text-gray-600 leading-relaxed mb-6">{project.description}</p>
-
-                        <div className="mb-6">
-                          <h4 className="text-sm font-semibold text-gray-700 mb-3">Technologies Used</h4>
-                          <div className="flex flex-wrap gap-2">
-                            {project.technologies.map((tech, techIndex) => (
-                              <span
-                                key={techIndex}
-                                className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-full hover:bg-gray-200 transition-colors"
-                              >
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-
-                        <div className="mb-6">
-                          <h4 className="text-sm font-semibold text-gray-700 mb-3">Key Features</h4>
-                          <ul className="space-y-2">
-                            {project.features.map((feature, featureIndex) => (
-                              <li key={featureIndex} className="flex items-start">
-                                <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 mr-3 flex-shrink-0"></div>
-                                <span className="text-gray-600 text-sm">{feature}</span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-
-                      <div className="flex justify-between items-center gap-4 mt-8">
-                        <a
-                          href={project.githubUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-3 px-6 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors duration-200 font-medium"
-                        >
-                          <Github className="w-4 h-4" />
-                          View Code
-                        </a>
-                        {project.liveUrl && project.liveUrl !== "#" && (
-                          <a
-                            href={project.liveUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center gap-3 px-6 py-2 border-2 bg-blue-600 text-white rounded-lg hover:bg-blue-600 hover:text-white transition-colors duration-200 font-medium"
-                          >
-                            <ExternalLink className="w-4 h-4" />
-                            Live Demo
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  {t}
+                </span>
               ))}
             </div>
           </div>
 
-          <button
-            onClick={prevSlide}
-            className="absolute -left-6 top-1/2 transform -translate-y-1/2 bg-white z-10 rounded-full p-2 shadow hover:shadow-md border border-gray-200"
-            aria-label="Previous project"
-          >
-            <ChevronLeft className="w-6 h-6 text-gray-600" />
-          </button>
-          <button
-            onClick={nextSlide}
-            className="absolute -right-6 top-1/2 transform -translate-y-1/2 bg-white z-10 rounded-full p-2 shadow hover:shadow-md border border-gray-200"
-            aria-label="Next project"
-          >
-            <ChevronRight className="w-6 h-6 text-gray-600" />
-          </button>
-        </div>
+          {/* Features */}
+          <div className="flex-grow">
+            <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Features</p>
+            <ul className="space-y-1.5">
+              {project.features.slice(0, 4).map((f, i) => (
+                <li key={i} className="flex items-center gap-2 text-sm text-slate-300">
+                  <span
+                    className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                    style={{ background: meta.glow, boxShadow: `0 0 6px ${meta.glow}` }}
+                  />
+                  {f}
+                </li>
+              ))}
+            </ul>
+          </div>
 
-        <div className="flex justify-center mt-8 space-x-2">
-          {Array.from({ length: projects.length - cardsPerView + 1 }).map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`h-3 rounded-full transition-all duration-200 ${
-                currentIndex === index
-                  ? "bg-blue-600 w-8"
-                  : "bg-gray-300 hover:bg-gray-400 w-3"
-              }`}
-              aria-label={`Go to project set ${index + 1}`}
-            />
-          ))}
-        </div>
-
-        <div className="text-center mt-6">
-          <span className="text-sm text-gray-500">
-            {Math.min(currentIndex + 1, projects.length)}–
-            {Math.min(currentIndex + cardsPerView, projects.length)} of {projects.length} projects
-          </span>
+          {/* CTA buttons */}
+          <div className="flex gap-3 mt-5">
+            {project.githubUrl !== "#" && (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white border border-white/10 hover:border-white/30 hover:bg-white/10 transition-all duration-200"
+              >
+                <Github className="w-4 h-4" /> Code
+              </a>
+            )}
+            {project.liveUrl && project.liveUrl !== "#" && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white flex-1 justify-center transition-all duration-200"
+                style={{
+                  background: `linear-gradient(135deg,${meta.glow}cc,${meta.glow}88)`,
+                  boxShadow: hovered ? `0 4px 20px ${meta.glow}60` : "none",
+                }}
+              >
+                <ExternalLink className="w-4 h-4" /> Live Demo
+              </a>
+            )}
+          </div>
         </div>
       </div>
-    </section>
+    </div>
+  );
+}
+
+/* ─── Main Export ────────────────────────────────────────────────────────── */
+export default function Projects() {
+  // Duplicate the array for seamless infinite loop
+  const allCards = [...projects, ...projects];
+
+  return (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+        /* ── Infinite horizontal scroll ── */
+        @keyframes marquee {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .marquee-track {
+          display: flex;
+          gap: 24px;
+          width: max-content;
+          animation: marquee 42s linear infinite;
+        }
+        .marquee-track:hover {
+          animation-play-state: paused;
+        }
+
+        /* ── Edge fade masks ── */
+        .marquee-wrapper {
+          -webkit-mask-image: linear-gradient(
+            to right,
+            transparent 0%,
+            black 8%,
+            black 92%,
+            transparent 100%
+          );
+          mask-image: linear-gradient(
+            to right,
+            transparent 0%,
+            black 8%,
+            black 92%,
+            transparent 100%
+          );
+        }
+
+        /* ── Shimmer sweep on top bar ── */
+        .shimmer-sweep {
+          background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255,255,255,0.5) 50%,
+            transparent 100%
+          );
+          animation: sweep 2.6s linear infinite;
+        }
+        @keyframes sweep {
+          from { transform: translateX(-100%); }
+          to   { transform: translateX(200%); }
+        }
+
+        /* ── Ambient orbs ── */
+        .bg-orb {
+          position: absolute;
+          border-radius: 50%;
+          filter: blur(90px);
+          pointer-events: none;
+          animation: orbFloat 16s ease-in-out infinite alternate;
+        }
+        @keyframes orbFloat {
+          from { transform: translate(0,0) scale(1); }
+          to   { transform: translate(40px,-28px) scale(1.18); }
+        }
+
+        /* ── Pulse dot ── */
+        @keyframes pulseDot {
+          0%,100% { opacity:.4; transform:scale(1); }
+          50%      { opacity:1;  transform:scale(1.35); }
+        }
+        .pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
+      `}</style>
+
+      <section
+        className="relative py-20 overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg,#020817 0%,#0a0f1e 55%,#050c1a 100%)",
+          fontFamily: "'DM Sans', sans-serif",
+        }}
+      >
+        {/* Ambient background orbs */}
+        <div className="bg-orb" style={{ width: 460, height: 460, background: "#7c3aed30", top: "-12%", left: "-6%" }} />
+        <div className="bg-orb" style={{ width: 380, height: 380, background: "#0ea5e930", top: "55%", right: "-6%", animationDelay: "4s" }} />
+        <div className="bg-orb" style={{ width: 280, height: 280, background: "#d946ef25", top: "25%", left: "42%", animationDelay: "8s" }} />
+
+        {/* Subtle dot grid */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            opacity: 0.025,
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)",
+            backgroundSize: "60px 60px",
+          }}
+        />
+
+        <div className="relative z-10">
+          {/* ── Section header ── */}
+          <div className="text-center mb-14 px-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-6 backdrop-blur-sm">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 pulse-dot" />
+              <span className="text-sm text-slate-400 font-medium tracking-wide">Portfolio Showcase</span>
+            </div>
+
+            <h2
+              className="text-5xl sm:text-6xl font-black text-white mb-5 leading-none tracking-tight"
+              style={{ fontFamily: "'Syne', sans-serif" }}
+            >
+              Featured{" "}
+              <span
+                className="bg-clip-text text-transparent"
+                style={{ backgroundImage: "linear-gradient(135deg,#818cf8,#c084fc,#f472b6)" }}
+              >
+                Projects
+              </span>
+            </h2>
+
+            <p className="text-slate-400 text-lg max-w-xl mx-auto leading-relaxed">
+              Innovative solutions crafted across full-stack, cloud infrastructure &amp; modern UX.
+            </p>
+          </div>
+
+          {/* ── Infinite auto-scroll marquee ── */}
+          <div className="marquee-wrapper overflow-hidden">
+            <div className="marquee-track py-6 px-3">
+              {allCards.map((project, i) => (
+                <ProjectCard key={i} project={project} />
+              ))}
+            </div>
+          </div>
+
+          {/* ── Hint text ── */}
+          <p className="text-center text-slate-600 text-xs mt-8 tracking-widest uppercase">
+            ✦ Hover any card to pause &nbsp;·&nbsp; Click links to explore ✦
+          </p>
+        </div>
+      </section>
+    </>
   );
 }

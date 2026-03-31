@@ -1,181 +1,387 @@
 "use client";
-import {
-  Code,
-  Database,
-  Cloud,
-  GitBranch,
-  Palette,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useRef } from "react";
+import { Code, Database, Cloud, GitBranch, Palette } from "lucide-react";
 
-export default function Skills() {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [cardsPerView, setCardsPerView] = useState(3);
+const categoryMeta = {
+  "Frontend Development": { glow: "#6366f1", from: "#6366f1", to: "#8b5cf6", icon: Code },
+  "Styling & UI":         { glow: "#06b6d4", from: "#06b6d4", to: "#3b82f6", icon: Palette },
+  "Backend & Database":   { glow: "#10b981", from: "#10b981", to: "#14b8a6", icon: Database },
+  "Cloud & Deployment":   { glow: "#f59e0b", from: "#f97316", to: "#f59e0b", icon: Cloud },
+  "Development Tools":    { glow: "#ec4899", from: "#ec4899", to: "#f43f5e", icon: GitBranch },
+};
 
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        setCardsPerView(1);
-      } else {
-        setCardsPerView(3);
-      }
-    };
+const skillCategories = [
+  {
+    title: "Frontend Development",
+    skills: [
+      { name: "React.js",    level: 90 },
+      { name: "Next.js",     level: 85 },
+      { name: "TypeScript",  level: 80 },
+      { name: "JavaScript",  level: 95 },
+      { name: "Redux",       level: 75 },
+    ],
+  },
+  {
+    title: "Styling & UI",
+    skills: [
+      { name: "TailwindCSS",   level: 90 },
+      { name: "Bootstrap",     level: 85 },
+      { name: "Shadcn/ui",     level: 80 },
+      { name: "Aceternity/ui", level: 70 },
+      { name: "CSS Modules",   level: 85 },
+    ],
+  },
+  {
+    title: "Backend & Database",
+    skills: [
+      { name: "Node.js",  level: 50 },
+      { name: "Java",     level: 40 },
+      { name: "MongoDB",  level: 80 },
+      { name: "MySQL",    level: 70 },
+      { name: "REST APIs", level: 75 },
+    ],
+  },
+  {
+    title: "Cloud & Deployment",
+    skills: [
+      { name: "AWS EC2",   level: 70 },
+      { name: "AWS S3",    level: 75 },
+      { name: "Vercel",    level: 100 },
+      { name: "Hostinger", level: 90 },
+      { name: "CI/CD",     level: 65 },
+    ],
+  },
+  {
+    title: "Development Tools",
+    skills: [
+      { name: "GitHub",   level: 95 },
+      { name: "VS Code",  level: 95 },
+      { name: "Postman",  level: 85 },
+      { name: "Figma",    level: 70 },
+      { name: "Docker",   level: 55 },
+    ],
+  },
+];
 
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  const skillCategories = [
-    {
-      title: "Frontend Development",
-      icon: <Code className="w-6 h-6" />,
-      skills: [
-        { name: "React.js", level: 90, color: "bg-blue-500" },
-        { name: "Next.js", level: 85, color: "bg-gray-800" },
-        { name: "TypeScript", level: 80, color: "bg-blue-600" },
-        { name: "JavaScript", level: 95, color: "bg-yellow-500" },
-        { name: "Redux", level: 75, color: "bg-purple-600" },
-      ],
-    },
-    {
-      title: "Styling & UI",
-      icon: <Palette className="w-6 h-6" />,
-      skills: [
-        { name: "TailwindCSS", level: 90, color: "bg-cyan-500" },
-        { name: "Bootstrap", level: 85, color: "bg-purple-700" },
-        { name: "Shadcn/ui", level: 80, color: "bg-gray-700" },
-        { name: "Aceternity/ui", level: 70, color: "bg-gray-700" },
-      ],
-    },
-    {
-      title: "Backend & Database",
-      icon: <Database className="w-6 h-6" />,
-      skills: [
-        { name: "Node.js", level: 50, color: "bg-red-600" },
-        { name: "Java", level: 40, color: "bg-red-600" },
-        { name: "MongoDB", level: 80, color: "bg-green-600" },
-        { name: "MySQL", level: 70, color: "bg-blue-700" },
-      ],
-    },
-    {
-      title: "Cloud & Deployment",
-      icon: <Cloud className="w-6 h-6" />,
-      skills: [
-        { name: "AWS EC2", level: 70, color: "bg-orange-500" },
-        { name: "AWS S3", level: 75, color: "bg-orange-600" },
-        { name: "Vercel", level: 100, color: "bg-blue-600" },
-        { name: "Hostinger", level: 90, color: "bg-black" },
-      ],
-    },
-    {
-      title: "Development Tools",
-      icon: <GitBranch className="w-6 h-6" />,
-      skills: [
-        { name: "Github", level: 95, color: "bg-red-500" },
-        { name: "VS Code", level: 95, color: "bg-blue-500" },
-        { name: "Postman", level: 85, color: "bg-orange-500" },
-      ],
-    },
-  ];
-
-  const maxIndex = skillCategories.length - cardsPerView;
-
-  const nextSlide = () => {
-    setCurrentIndex((prev) => (prev >= maxIndex ? 0 : prev + 1));
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prev) => (prev <= 0 ? maxIndex : prev - 1));
-  };
-
-  const SkillBar = ({ skill }) => (
-    <div className="mb-4">
-      <div className="flex justify-between items-center mb-1">
-        <span className="text-sm font-medium text-gray-700">{skill.name}</span>
-        <span className="text-xs text-gray-500">{skill.level}%</span>
+/* ── Animated skill bar ──────────────────────────────────────────────────── */
+function SkillBar({ skill, glow, from, to }) {
+  return (
+    <div className="mb-3 last:mb-0">
+      <div className="flex justify-between items-center mb-1.5">
+        <span className="text-sm font-semibold text-slate-300">{skill.name}</span>
+        <span
+          className="text-xs font-bold px-2 py-0.5 rounded-full"
+          style={{ background: `${glow}22`, color: glow }}
+        >
+          {skill.level}%
+        </span>
       </div>
-      <div className="w-full bg-gray-200 rounded-full h-2">
+      <div
+        className="w-full h-2 rounded-full overflow-hidden"
+        style={{ background: "rgba(255,255,255,0.07)" }}
+      >
         <div
-          className={`h-2 rounded-full ${skill.color} transition-all duration-1000 ease-out`}
-          style={{ width: `${skill.level}%` }}
-        />
+          className="h-full rounded-full skill-bar-fill relative overflow-hidden"
+          style={{
+            width: `${skill.level}%`,
+            background: `linear-gradient(90deg, ${from}, ${to})`,
+            boxShadow: `0 0 8px ${glow}88`,
+          }}
+        >
+          {/* shimmer on bar */}
+          <div className="absolute inset-0 bar-shimmer" />
+        </div>
       </div>
     </div>
   );
+}
+
+/* ── 3-D Tilt Skill Card ─────────────────────────────────────────────────── */
+function SkillCard({ category }) {
+  const cardRef = useRef(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [hovered, setHovered] = useState(false);
+  const [shimmer, setShimmer] = useState({ x: 50, y: 50 });
+
+  const meta = categoryMeta[category.title];
+  const Icon = meta.icon;
+
+  const onMove = (e) => {
+    const el = cardRef.current;
+    if (!el) return;
+    const r = el.getBoundingClientRect();
+    const dx = e.clientX - (r.left + r.width / 2);
+    const dy = e.clientY - (r.top + r.height / 2);
+    setTilt({ x: -(dy / (r.height / 2)) * 13, y: (dx / (r.width / 2)) * 13 });
+    setShimmer({ x: ((e.clientX - r.left) / r.width) * 100, y: ((e.clientY - r.top) / r.height) * 100 });
+  };
 
   return (
-    <section className="w-full bg-gray-900 py-12 px-4">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-white mb-3">Technical Skills</h2>
-          <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-600 mx-auto rounded-full" />
-          <p className="text-white text-lg">My expertise across different technologies</p>
+    <div
+      ref={cardRef}
+      onMouseMove={onMove}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => { setTilt({ x: 0, y: 0 }); setHovered(false); }}
+      style={{
+        width: 320,
+        height: 420,
+        flexShrink: 0,
+        transform: hovered
+          ? `perspective(900px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale3d(1.05,1.05,1.05)`
+          : "perspective(900px) rotateX(0) rotateY(0) scale3d(1,1,1)",
+        transition: hovered ? "transform 0.08s ease-out" : "transform 0.55s cubic-bezier(.03,.98,.52,.99)",
+        willChange: "transform",
+        zIndex: hovered ? 50 : 1,
+        position: "relative",
+      }}
+    >
+      <div
+        className="relative rounded-2xl overflow-hidden border border-white/10 flex flex-col" id= "skills"
+        style={{
+          height: 420,
+          background: "linear-gradient(145deg,rgba(14,14,30,0.95),rgba(8,8,22,0.98))",
+          boxShadow: hovered
+            ? `0 28px 56px -10px ${meta.glow}55, 0 0 0 1px ${meta.glow}44, inset 0 1px 0 rgba(255,255,255,0.08)`
+            : "0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)",
+          transition: "box-shadow 0.4s ease",
+        }}
+      >
+        {/* Mouse-follow shimmer */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            opacity: hovered ? 1 : 0,
+            transition: "opacity 0.3s",
+            background: `radial-gradient(circle at ${shimmer.x}% ${shimmer.y}%, ${meta.glow}28 0%, transparent 65%)`,
+          }}
+        />
+
+        {/* Top gradient accent bar */}
+        <div
+          className="h-1.5 w-full relative overflow-hidden flex-shrink-0"
+          style={{ background: `linear-gradient(90deg, ${meta.from}, ${meta.to})` }}
+        >
+          <div className="absolute inset-0 bar-shimmer" />
         </div>
 
-        <div className="relative px-4 md:px-16">
-          <button
-            onClick={prevSlide}
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-100 rounded-full p-3 z-10"
-          >
-            <ChevronLeft className="text-gray-600 w-5 h-5" />
-          </button>
-          <button
-            onClick={nextSlide}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white hover:bg-gray-100 rounded-full p-3 z-10"
-          >
-            <ChevronRight className="text-gray-600 w-5 h-5" />
-          </button>
+        {/* BG orb */}
+        <div
+          className="absolute -top-16 -right-16 w-44 h-44 rounded-full blur-3xl pointer-events-none"
+          style={{
+            background: `radial-gradient(circle,${meta.glow},transparent)`,
+            opacity: hovered ? 0.28 : 0.1,
+            transition: "opacity 0.4s",
+          }}
+        />
 
-          <div className="overflow-hidden rounded-2xl">
+        <div className="p-6 flex flex-col relative z-10">
+          {/* Icon + title */}
+          <div className="flex items-center gap-3 mb-5">
             <div
-              className="flex transition-transform duration-500 ease-in-out"
+              className="p-2.5 rounded-xl flex-shrink-0"
               style={{
-                width: `${(skillCategories.length / cardsPerView) * 100}%`,
-                transform: `translateX(-${(100 / skillCategories.length) * currentIndex}%)`,
+                background: `linear-gradient(135deg, ${meta.from}, ${meta.to})`,
+                boxShadow: `0 4px 16px ${meta.glow}55`,
               }}
             >
-              {skillCategories.map((category, index) => (
-                <div
-                  key={index}
-                  className="px-4 flex-shrink-0"
-                  style={{ width: `${100 / skillCategories.length}%` }}
-                >
-                  <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100 h-full">
-                    <div className="flex items-center mb-4">
-                      <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-3 rounded-lg text-white mr-4">
-                        {category.icon}
-                      </div>
-                      <h3 className="text-lg font-semibold text-gray-800">{category.title}</h3>
-                    </div>
-                    <div>
-                      {category.skills.map((skill, i) => (
-                        <SkillBar key={i} skill={skill} />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
+              <Icon className="w-5 h-5 text-white" />
             </div>
+            <h3
+              className="font-black text-white text-base leading-tight"
+              style={{ fontFamily: "'Syne', sans-serif" }}
+            >
+              {category.title}
+            </h3>
           </div>
 
-          <div className="flex justify-center mt-8 space-x-2">
-            {Array.from({ length: maxIndex + 1 }).map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentIndex(index)}
-                className={`w-3 h-3 rounded-full transition-colors duration-200 ${
-                  index === currentIndex
-                    ? "bg-gradient-to-r from-blue-500 to-purple-600"
-                    : "bg-gray-300 hover:bg-gray-400"
-                }`}
+          {/* Skill bars */}
+          <div>
+            {category.skills.map((skill, i) => (
+              <SkillBar
+                key={i}
+                skill={skill}
+                glow={meta.glow}
+                from={meta.from}
+                to={meta.to}
               />
             ))}
           </div>
         </div>
       </div>
-    </section>
+    </div>
+  );
+}
+
+/* ─── Main Export ────────────────────────────────────────────────────────── */
+export default function Skills() {
+  const allCards = [...skillCategories, ...skillCategories];
+
+  return (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+        /* ── Infinite horizontal scroll ── */
+        @keyframes skills-marquee {
+          0%   { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .skills-track {
+          display: flex;
+          gap: 22px;
+          width: max-content;
+          animation: skills-marquee 36s linear infinite;
+        }
+        .skills-track:hover {
+          animation-play-state: paused;
+        }
+
+        /* ── Edge fade masks ── */
+        .skills-wrapper {
+          -webkit-mask-image: linear-gradient(
+            to right, transparent 0%, black 8%, black 92%, transparent 100%
+          );
+          mask-image: linear-gradient(
+            to right, transparent 0%, black 8%, black 92%, transparent 100%
+          );
+        }
+
+        /* ── Skill bar fill animation ── */
+        .skill-bar-fill {
+          animation: barGrow 1.2s cubic-bezier(.22,1,.36,1) both;
+        }
+        @keyframes barGrow {
+          from { width: 0 !important; }
+        }
+
+        /* ── Bar shimmer ── */
+        .bar-shimmer {
+          background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+          animation: barSweep 2.8s linear infinite;
+        }
+        @keyframes barSweep {
+          from { transform: translateX(-100%); }
+          to   { transform: translateX(200%); }
+        }
+
+        /* ── BG orbs ── */
+        .s-orb {
+          position: absolute;
+          border-radius: 50%;
+          filter: blur(90px);
+          pointer-events: none;
+          animation: sOrbFloat 18s ease-in-out infinite alternate;
+        }
+        @keyframes sOrbFloat {
+          from { transform: translate(0,0) scale(1); }
+          to   { transform: translate(-35px,25px) scale(1.15); }
+        }
+
+        /* ── Pulse dot ── */
+        @keyframes sPulse {
+          0%,100% { opacity:.4; transform:scale(1); }
+          50%      { opacity:1;  transform:scale(1.35); }
+        }
+        .s-pulse { animation: sPulse 2s ease-in-out infinite; }
+
+        /* ── Floating number badge ── */
+        .count-badge {
+          animation: countPop 0.6s cubic-bezier(.22,1,.36,1) both;
+        }
+        @keyframes countPop {
+          from { opacity:0; transform:scale(0.6) translateY(8px); }
+          to   { opacity:1; transform:scale(1) translateY(0); }
+        }
+      `}</style>
+
+      <section
+        className="relative py-20 overflow-hidden"
+        style={{
+          background: "linear-gradient(135deg,#020817 0%,#080d1c 55%,#030a14 100%)",
+          fontFamily: "'DM Sans', sans-serif",
+        }}
+      >
+        {/* Ambient BG orbs */}
+        <div className="s-orb" style={{ width: 420, height: 420, background: "#6366f130", top: "-10%", left: "-4%"}} />
+        <div className="s-orb" style={{ width: 360, height: 360, background: "#06b6d430", bottom: "-8%", right: "-4%", animationDelay: "5s" }} />
+        <div className="s-orb" style={{ width: 260, height: 260, background: "#f59e0b25", top: "35%", left: "50%", animationDelay: "10s" }} />
+
+        {/* Grid overlay */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            opacity: 0.025,
+            backgroundImage:
+              "linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)",
+            backgroundSize: "60px 60px",
+          }}
+        />
+
+        <div className="relative z-10">
+          {/* ── Header ── */}
+          <div className="text-center mb-14 px-4">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-6 backdrop-blur-sm">
+              <span className="w-2 h-2 rounded-full bg-cyan-400 s-pulse" />
+              <span className="text-sm text-slate-400 font-medium tracking-wide">My Expertise</span>
+            </div>
+
+            <h2
+              className="text-5xl sm:text-6xl font-black text-white mb-5 leading-none tracking-tight"
+              style={{ fontFamily: "'Syne', sans-serif" }}
+            >
+              Technical{" "}
+              <span
+                className="bg-clip-text text-transparent"
+                style={{ backgroundImage: "linear-gradient(135deg,#6366f1,#06b6d4,#10b981)" }}
+              >
+                Skills
+              </span>
+            </h2>
+
+            <p className="text-slate-400 text-lg max-w-xl mx-auto leading-relaxed">
+              My expertise across frontend, backend, cloud infrastructure &amp; dev tools.
+            </p>
+
+            {/* Quick stat row */}
+            <div className="flex justify-center gap-8 mt-8">
+              {[
+                { num: "5",   label: "Skill Areas" },
+                { num: "20+", label: "Technologies" },
+                { num: "95%", label: "Best Skill" },
+              ].map((s, i) => (
+                <div key={i} className="text-center count-badge" style={{ animationDelay: `${i * 0.15}s` }}>
+                  <div
+                    className="text-2xl font-black"
+                    style={{
+                      fontFamily: "'Syne', sans-serif",
+                      backgroundImage: "linear-gradient(135deg,#6366f1,#06b6d4)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
+                    }}
+                  >
+                    {s.num}
+                  </div>
+                  <div className="text-xs text-slate-500 uppercase tracking-widest mt-0.5">{s.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Infinite auto-scroll marquee ── */}
+          <div className="skills-wrapper overflow-hidden">
+            <div className="skills-track py-6 px-3">
+              {allCards.map((category, i) => (
+                <SkillCard key={i} category={category} />
+              ))}
+            </div>
+          </div>
+
+          {/* ── Hint ── */}
+          <p className="text-center text-slate-600 text-xs mt-8 tracking-widest uppercase">
+            ✦ Hover any card to pause &nbsp;·&nbsp; 3D tilt on hover ✦
+          </p>
+        </div>
+      </section>
+    </>
   );
 }
