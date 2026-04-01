@@ -40,7 +40,7 @@ const Logo = () => (
       >
         Shahid
       </span>
-      <span className="text-[10px] text-slate-500 tracking-[0.2em] uppercase font-semibold">
+      <span className="text-[10px] text-blue-500 tracking-[0.2em] uppercase font-semibold">
         Developer
       </span>
     </div>
@@ -258,7 +258,7 @@ export default function Navbar() {
       <nav
         className={`nb-glass sticky top-0 z-50 w-full ${scrolled ? "nb-scrolled" : ""}`}
         style={{
-          background: "rgba(2,8,23,0.6)",
+          background: "rgba(2,8,23,10.6)",
           fontFamily: "'DM Sans', sans-serif",
         }}
       >
