@@ -1,306 +1,503 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
+import { Github, Linkedin, Globe, Mail, Phone, MapPin, ArrowUpRight, Zap, Heart } from "lucide-react";
 
-// ── Data ─────────────────────────────────────────────────────────────────────
-const educationData = [
-  {
-    degree: "B.Tech",
-    field: "Electronics & Communication Engineering",
-    institution: "RR Institute Of Modern Technology",
-    university: "AKTU",
-    year: "2023",
-    type: "Bachelor's",
-    icon: "🎓",
-    color: "#6366f1",
-    colorB: "#8b5cf6",
-    tags: ["Engineering Graduate", "Electronics Engineering"],
-  },
-  {
-    degree: "Diploma",
-    field: "Electronics Engineering",
-    institution: "Ambalika Institute Of Management And Technology",
-    university: "",
-    year: "2020",
-    type: "Diploma",
-    icon: "🏅",
-    color: "#10b981",
-    colorB: "#14b8a6",
-    tags: ["Technical Diploma", "Electronics Engineering"],
-  },
-];
-
-const STATS = [
-  { value: "4+",   label: "Years of Study",    icon: "📚", color: "#6366f1" },
-  { value: "2",    label: "Degrees Earned",     icon: "🎓", color: "#8b5cf6" },
-  { value: "100%", label: "Completion Rate",    icon: "✅", color: "#10b981" },
-];
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-function Orb({ style }) {
-  return <div style={{ position:"absolute", borderRadius:"50%", filter:"blur(70px)", pointerEvents:"none", ...style }} />;
-}
-
-// ── Component ─────────────────────────────────────────────────────────────────
-export default function Education() {
+/* ── Particle Canvas ── */
+function ParticleCanvas() {
   const canvasRef = useRef(null);
-  const [vis, setVis]         = useState(false);
-  const [hovCard, setHovCard] = useState(null);
-  const [hovStat, setHovStat] = useState(null);
-
-  // particle network
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
-    let animId;
     const resize = () => { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; };
     resize();
     window.addEventListener("resize", resize);
-    const N = 48;
-    const pts = Array.from({ length: N }, () => ({
+    const pts = Array.from({ length: 50 }, () => ({
       x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-      vx: (Math.random()-.5)*.38, vy: (Math.random()-.5)*.38, r: Math.random()*1.4+.5,
+      vx: (Math.random() - 0.5) * 0.35, vy: (Math.random() - 0.5) * 0.35,
+      r: Math.random() * 1.2 + 0.4,
+      color: ["#6366f1","#06b6d4","#f472b6","#8b5cf6"][Math.floor(Math.random()*4)],
     }));
+    let raf;
     const draw = () => {
-      ctx.clearRect(0,0,canvas.width,canvas.height);
-      for (let i=0;i<N;i++){
-        const p=pts[i]; p.x+=p.vx; p.y+=p.vy;
-        if(p.x<0||p.x>canvas.width) p.vx*=-1;
-        if(p.y<0||p.y>canvas.height) p.vy*=-1;
-        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-        ctx.fillStyle="rgba(99,102,241,0.42)"; ctx.fill();
-        for(let j=i+1;j<N;j++){
-          const q=pts[j],dx=p.x-q.x,dy=p.y-q.y,d=Math.sqrt(dx*dx+dy*dy);
-          if(d<105){ ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y);
-            ctx.strokeStyle=`rgba(99,102,241,${.11*(1-d/105)})`; ctx.lineWidth=.55; ctx.stroke(); }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pts.forEach((p, i) => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = p.color + "80"; ctx.fill();
+        for (let j = i + 1; j < pts.length; j++) {
+          const q = pts[j], dx = p.x - q.x, dy = p.y - q.y, d = Math.sqrt(dx*dx+dy*dy);
+          if (d < 90) { ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.strokeStyle=`rgba(99,102,241,${0.12*(1-d/90)})`; ctx.lineWidth=0.5; ctx.stroke(); }
         }
-      }
-      animId = requestAnimationFrame(draw);
+      });
+      raf = requestAnimationFrame(draw);
     };
     draw();
-    setTimeout(()=>setVis(true),80);
-    return ()=>{ cancelAnimationFrame(animId); window.removeEventListener("resize",resize); };
-  },[]);
+    return () => { cancelAnimationFrame(raf); window.removeEventListener("resize", resize); };
+  }, []);
+  return <canvas ref={canvasRef} className="absolute inset-0 w-full h-full pointer-events-none" style={{ zIndex: 0 }} />;
+}
+
+const socials = [
+  { icon: <Github className="w-4 h-4" />,   label: "GitHub",    href: "https://github.com/shahid7424",         color: "#6366f1" },
+  { icon: <Linkedin className="w-4 h-4" />, label: "LinkedIn",  href: "https://www.linkedin.com/in/shahid-shah-416b3b198/", color: "#06b6d4" },
+  { icon: <Globe className="w-4 h-4" />,    label: "Portfolio", href: "https://my-portfolio-one-xi-46.vercel.app/", color: "#10b981" },
+];
+
+const navLinks = [
+  { label: "Home",     href: "/" },
+  { label: "About",    href: "#about" },
+  { label: "Skills",   href: "#skills" },
+  { label: "Projects", href: "#projects" },
+  { label: "Contact",  href: "/contact" },
+  { label: "Freelancer", href: "/freelancer" },
+];
+
+const services = [
+  { label: "Web Development",  href: "#" },
+  { label: "React / Next.js",  href: "#" },
+  { label: "Full Stack Apps",  href: "#" },
+  { label: "UI/UX Design",     href: "#" },
+  { label: "API Integration",  href: "#" },
+];
+
+/* ── All CSS scoped with "ft-" prefix (ft = footer) ── */
+const FOOTER_STYLES = `
+  .ft-section {
+    background: #030712;
+    position: relative;
+    overflow: hidden;
+    font-family: var(--font-dm-sans), 'DM Sans', sans-serif;
+  }
+
+  /* Top border glow */
+  .ft-top-border {
+    height: 1px;
+    width: 100%;
+    background: linear-gradient(90deg, transparent, #6366f1, #06b6d4, #f472b6, transparent);
+    position: relative;
+  }
+  .ft-top-border::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, #6366f1, #06b6d4, #f472b6, transparent);
+    filter: blur(8px);
+    opacity: 0.5;
+  }
+
+  /* Brand name shimmer */
+  @keyframes ft-shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  .ft-brand-name {
+    font-family: var(--font-syne), 'Syne', sans-serif;
+    font-size: 2.5rem;
+    font-weight: 900;
+    background: linear-gradient(90deg, #fff 0%, #818cf8 25%, #06b6d4 50%, #f472b6 75%, #fff 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: ft-shimmer 5s linear infinite;
+    line-height: 1;
+  }
+
+  /* Availability badge pulse */
+  @keyframes ft-avail-pulse {
+    0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.4); }
+    50%     { box-shadow: 0 0 0 8px rgba(16,185,129,0); }
+  }
+  .ft-avail-dot {
+    animation: ft-avail-pulse 2s ease-in-out infinite;
+  }
+
+  /* Nav links */
+  .ft-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    padding: 6px 0;
+    transition: color 0.2s ease, padding-left 0.25s ease;
+    position: relative;
+  }
+  .ft-nav-link::before {
+    content: '';
+    width: 0;
+    height: 1px;
+    background: linear-gradient(90deg, #6366f1, #06b6d4);
+    transition: width 0.3s ease;
+    flex-shrink: 0;
+  }
+  .ft-nav-link:hover {
+    color: #fff;
+    padding-left: 4px;
+  }
+  .ft-nav-link:hover::before { width: 16px; }
+
+  /* Social buttons */
+  .ft-social {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #cbd5e1;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+    background: rgba(255,255,255,0.03);
+  }
+  .ft-social:hover {
+    transform: translateY(-3px);
+    background: rgba(255,255,255,0.07);
+  }
+
+  /* Contact row */
+  .ft-contact-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    transition: all 0.25s ease;
+  }
+  .ft-contact-link:hover {
+    color: #fff;
+    background: rgba(99,102,241,0.08);
+    border-color: rgba(99,102,241,0.25);
+  }
+
+  /* CTA Button */
+  .ft-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    box-shadow: 0 4px 24px rgba(99,102,241,0.35);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .ft-cta-btn::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .ft-cta-btn:hover::before { opacity: 1; }
+  .ft-cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(99,102,241,0.5);
+  }
+
+  /* Section title */
+  .ft-section-title {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #475569;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ft-section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(99,102,241,0.3), transparent);
+  }
+
+  /* Scan line */
+  @keyframes ft-scan {
+    0%   { transform: translateY(-100%); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 1; }
+    100% { transform: translateY(600px); opacity: 0; }
+  }
+  .ft-scan-line {
+    position: absolute; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(99,102,241,0.25), transparent);
+    animation: ft-scan 8s linear infinite;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Reveal animation */
+  @keyframes ft-fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .ft-revealed { animation: ft-fadeUp 0.7s cubic-bezier(.22,1,.36,1) both; }
+
+  /* Stat card */
+  .ft-stat {
+    padding: 16px 20px;
+    border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.06);
+    background: rgba(255,255,255,0.02);
+    text-align: center;
+    transition: border-color 0.3s ease, background 0.3s ease;
+  }
+  .ft-stat:hover {
+    border-color: rgba(99,102,241,0.3);
+    background: rgba(99,102,241,0.06);
+  }
+
+  /* Bottom copyright */
+  @keyframes ft-blink {
+    0%,100% { opacity: 1; }
+    50%     { opacity: 0.3; }
+  }
+  .ft-blink { animation: ft-blink 2s ease-in-out infinite; }
+
+  /* WhatsApp btn */
+  .ft-wa-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 32px;
+    border-radius: 14px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: #fff;
+    text-decoration: none;
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    box-shadow: 0 4px 24px rgba(34,197,94,0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .ft-wa-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 32px rgba(34,197,94,0.5);
+  }
+
+  /* Grid divider */
+  .ft-divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+    margin: 40px 0;
+  }
+`;
+
+const WAIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.097"/>
+  </svg>
+);
+
+export default function Footer() {
+  const [vis, setVis] = useState(false);
+  useEffect(() => { setTimeout(() => setVis(true), 100); }, []);
 
   return (
-    <section style={{
-      minHeight:"100vh", background:"#05080f", position:"relative",
-      overflow:"hidden", padding:"64px 16px",
-      fontFamily:"'Rajdhani','Orbitron',sans-serif",
-    }}>
-      {/* fonts + keyframes */}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
-        @keyframes fadeUp   { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
-        @keyframes shimmer  { 0%{background-position:-200% center} 100%{background-position:200% center} }
-        @keyframes orbDrift { 0%,100%{transform:translate(0,0) scale(1)} 40%{transform:translate(28px,-20px) scale(1.08)} 70%{transform:translate(-18px,14px) scale(.94)} }
-        @keyframes blink    { 0%,100%{opacity:1} 50%{opacity:.2} }
-        @keyframes scanMove { 0%{transform:translateY(-100%)} 100%{transform:translateY(120vh)} }
-        @keyframes barGrow  { from{width:0%} to{width:100%} }
-        .edu-card  { transition:transform .32s cubic-bezier(.23,1,.32,1),box-shadow .32s ease,border-color .32s ease; }
-        .edu-card:hover { transform:translateY(-7px) scale(1.012); }
-        .stat-pill { transition:transform .28s cubic-bezier(.23,1,.32,1),box-shadow .28s ease; }
-        .stat-pill:hover { transform:translateY(-5px) scale(1.05); }
-        .tag-chip  { transition:transform .22s ease,border-color .22s ease,color .22s ease; }
-        .tag-chip:hover { transform:translateY(-2px); }
-      `}</style>
+    <footer className="ft-section">
+      <style dangerouslySetInnerHTML={{ __html: FOOTER_STYLES }} />
 
-      {/* orbs */}
-      <Orb style={{width:500,height:500,background:"radial-gradient(circle,rgba(99,102,241,.14) 0%,transparent 70%)",top:-120,left:-160,animation:"orbDrift 14s ease-in-out infinite"}}/>
-      <Orb style={{width:360,height:360,background:"radial-gradient(circle,rgba(16,185,129,.1) 0%,transparent 70%)",bottom:-80,right:-90,animation:"orbDrift 19s ease-in-out infinite reverse"}}/>
-      <Orb style={{width:240,height:240,background:"radial-gradient(circle,rgba(139,92,246,.08) 0%,transparent 70%)",top:"42%",left:"52%",animation:"orbDrift 23s ease-in-out infinite 4s"}}/>
+      {/* Top glow border */}
+      <div className="ft-top-border" />
 
-      {/* particles */}
-      <canvas ref={canvasRef} style={{position:"absolute",inset:0,width:"100%",height:"100%",pointerEvents:"none"}}/>
+      {/* Scan line */}
+      <div className="ft-scan-line" />
 
-      {/* scan line */}
-      <div style={{position:"absolute",left:0,right:0,height:2,background:"linear-gradient(90deg,transparent,rgba(99,102,241,.28),transparent)",animation:"scanMove 7s linear infinite",pointerEvents:"none",zIndex:1}}/>
+      {/* Particle bg */}
+      <ParticleCanvas />
 
-      {/* grid lines */}
-      {[...Array(9)].map((_,i)=>(
-        <div key={i} style={{position:"absolute",left:0,right:0,top:`${(i+1)*10}%`,height:1,background:"rgba(99,102,241,.032)",pointerEvents:"none"}}/>
-      ))}
+      {/* Ambient orbs */}
+      <div className="absolute -top-32 -left-20 w-[400px] h-[400px] rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(99,102,241,0.12), transparent)", filter: "blur(80px)", zIndex: 0 }} />
+      <div className="absolute -bottom-20 -right-16 w-[300px] h-[300px] rounded-full pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(6,182,212,0.1), transparent)", filter: "blur(70px)", zIndex: 0 }} />
 
-      {/* content */}
-      <div style={{position:"relative",zIndex:2,maxWidth:860,margin:"0 auto"}}>
+      <div className="relative z-10 max-w-7xl mx-auto px-6 sm:px-10 lg:px-16 pt-16 pb-8">
 
-        {/* ── Section header ── */}
-        <div style={{textAlign:"center",marginBottom:52,opacity:vis?1:0,animation:vis?"fadeUp .7s ease both":"none"}}>
-          <div style={{display:"inline-block",border:"1px solid rgba(99,102,241,.35)",borderRadius:3,padding:"4px 18px",marginBottom:16,background:"rgba(99,102,241,.07)"}}>
-            <span style={{fontFamily:"'Orbitron',sans-serif",fontSize:10,color:"#818cf8",letterSpacing:4,textTransform:"uppercase"}}>SYS://ACADEMIC_LOG</span>
+        {/* ── TOP HERO ROW ── */}
+        <div className={`ft-revealed flex flex-col lg:flex-row items-start lg:items-center justify-between gap-10 mb-12`}
+          style={{ animationDelay: "0.1s" }}>
+
+          {/* Brand */}
+          <div className="max-w-sm">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl flex items-center justify-center"
+                style={{ background: "linear-gradient(135deg,#6366f1,#06b6d4)", boxShadow: "0 0 20px rgba(99,102,241,0.4)" }}>
+                <Zap className="w-5 h-5 text-white" />
+              </div>
+              <span className="ft-brand-name">Shahid Shah</span>
+            </div>
+            <p className="text-slate-500 text-sm leading-relaxed mb-5">
+              Full-Stack Developer crafting high-performance web applications with pixel-perfect UI and scalable architecture.
+            </p>
+
+            {/* Availability badge */}
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full border border-emerald-500/20 bg-emerald-500/5">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 ft-avail-dot" />
+              <span className="text-emerald-400 text-xs font-semibold tracking-wide">Available for hire</span>
+            </div>
           </div>
 
-          {/* icon badge */}
-          <div style={{display:"flex",justifyContent:"center",marginBottom:14}}>
-            <div style={{width:64,height:64,borderRadius:"50%",background:"linear-gradient(135deg,#6366f1,#8b5cf6)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:28,boxShadow:"0 0 24px rgba(99,102,241,.45)"}}>🎓</div>
-          </div>
-
-          <h2 style={{fontFamily:"'Orbitron',sans-serif",fontSize:"clamp(2rem,5vw,3.2rem)",fontWeight:900,margin:"0 0 8px",lineHeight:1.1}}>
-            <span style={{background:"linear-gradient(90deg,#fff 0%,#818cf8 35%,#06b6d4 65%,#fff 100%)",backgroundSize:"200% auto",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent",animation:"shimmer 4s linear infinite"}}>EDUCATION</span>
-          </h2>
-          <p style={{fontFamily:"'Rajdhani',sans-serif",fontSize:"clamp(.9rem,2vw,1.05rem)",color:"rgba(255,255,255,.4)",marginBottom:14,letterSpacing:1}}>Academic Journey &amp; Qualifications</p>
-
-          <div style={{display:"flex",justifyContent:"center",gap:6,alignItems:"center"}}>
-            <div style={{width:36,height:1,background:"rgba(99,102,241,.5)"}}/>
-            <div style={{width:7,height:7,borderRadius:"50%",background:"#818cf8",boxShadow:"0 0 10px #818cf8",animation:"blink 1.6s ease-in-out infinite"}}/>
-            <div style={{width:36,height:1,background:"rgba(99,102,241,.5)"}}/>
+          {/* CTA buttons */}
+          <div className="flex flex-wrap gap-3">
+            <a href="mailto:shahshahid121212@gmail.com" className="ft-cta-btn">
+              <Mail className="w-4 h-4" />
+              Hire Me
+              <ArrowUpRight className="w-4 h-4" />
+            </a>
+            <a href="https://wa.me/918948681079" target="_blank" rel="noopener noreferrer" className="ft-wa-btn">
+              <WAIcon />
+              WhatsApp
+            </a>
           </div>
         </div>
 
-        {/* ── Education Cards ── */}
-        <div style={{display:"flex",flexDirection:"column",gap:20,marginBottom:28}}>
-          {educationData.map((edu, index) => (
-            <div
-              key={index}
-              className="edu-card"
-              onMouseEnter={()=>setHovCard(index)}
-              onMouseLeave={()=>setHovCard(null)}
-              style={{
-                background:"linear-gradient(135deg,rgba(10,14,40,.97),rgba(6,10,28,.99))",
-                borderRadius:16,
-                border:`1px solid ${hovCard===index?`${edu.color}55`:"rgba(99,102,241,.18)"}`,
-                boxShadow: hovCard===index
-                  ? `0 0 40px ${edu.color}22, 0 20px 60px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.04)`
-                  : "0 0 40px rgba(99,102,241,.06), 0 20px 60px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.03)",
-                overflow:"hidden",
-                opacity:vis?1:0,
-                animation:vis?`fadeUp .8s ease ${.2+index*.18}s both`:"none",
-              }}
-            >
-              {/* top gradient bar */}
-              <div style={{height:3,background:`linear-gradient(90deg,${edu.color},${edu.colorB},${edu.color})`,backgroundSize:"200% 100%",animation:"shimmer 3s linear infinite"}}/>
+        {/* ── STATS ROW ── */}
+        <div className={`ft-revealed grid grid-cols-3 sm:grid-cols-3 gap-4 mb-12`}
+          style={{ animationDelay: "0.2s" }}>
+          {[
+            { val: "2+",  label: "Years Exp",    color: "#818cf8" },
+            { val: "15+", label: "Projects",     color: "#06b6d4" },
+            { val: "10+", label: "Happy Clients", color: "#f472b6" },
+          ].map((s, i) => (
+            <div key={i} className="ft-stat">
+              <div className="text-2xl font-black leading-none mb-1"
+                style={{
+                  fontFamily: "var(--font-syne), 'Syne', sans-serif",
+                  backgroundImage: `linear-gradient(135deg, ${s.color}, #fff)`,
+                  WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+                }}>
+                {s.val}
+              </div>
+              <div className="text-xs text-slate-500 uppercase tracking-wider">{s.label}</div>
+            </div>
+          ))}
+        </div>
 
-              {/* corner decorations */}
-              {[{top:10,left:10},{top:10,right:10},{bottom:10,left:10},{bottom:10,right:10}].map((pos,ci)=>(
-                <div key={ci} style={{
-                  position:"absolute",width:11,height:11,
-                  borderTop:ci<2?`1.5px solid ${edu.color}88`:"none",
-                  borderBottom:ci>=2?`1.5px solid ${edu.color}88`:"none",
-                  borderLeft:ci%2===0?`1.5px solid ${edu.color}88`:"none",
-                  borderRight:ci%2===1?`1.5px solid ${edu.color}88`:"none",
-                  animation:"blink 2s ease-in-out infinite",animationDelay:`${ci*.3}s`,...pos,
-                }}/>
+        <div className="ft-divider" />
+
+        {/* ── LINKS GRID ── */}
+        <div className={`ft-revealed grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-12`}
+          style={{ animationDelay: "0.3s" }}>
+
+          {/* Navigation */}
+          <div>
+            <p className="ft-section-title">Navigation</p>
+            <div className="flex flex-col">
+              {navLinks.map((link, i) => (
+                <a key={i} href={link.href} className="ft-nav-link">
+                  {link.label}
+                </a>
               ))}
+            </div>
+          </div>
 
-              <div style={{padding:"clamp(22px,4vw,36px)"}}>
-                <div style={{display:"flex",flexWrap:"wrap",gap:16,alignItems:"flex-start"}}>
+          {/* Services */}
+          <div>
+            <p className="ft-section-title">Services</p>
+            <div className="flex flex-col">
+              {services.map((s, i) => (
+                <a key={i} href={s.href} className="ft-nav-link">
+                  {s.label}
+                </a>
+              ))}
+            </div>
+          </div>
 
-                  {/* icon box */}
-                  <div style={{
-                    width:60,height:60,borderRadius:12,flexShrink:0,
-                    background:`linear-gradient(135deg,${edu.color}33,${edu.colorB}22)`,
-                    border:`1px solid ${edu.color}44`,
-                    display:"flex",alignItems:"center",justifyContent:"center",
-                    fontSize:26,boxShadow:`0 0 16px ${edu.color}30`,
-                    transition:"transform .3s ease",
-                    transform:hovCard===index?"scale(1.1)":"scale(1)",
-                  }}>
-                    {edu.icon}
-                  </div>
-
-                  {/* main content */}
-                  <div style={{flex:1,minWidth:200}}>
-                    {/* badges row */}
-                    <div style={{display:"flex",flexWrap:"wrap",alignItems:"center",gap:10,marginBottom:12}}>
-                      <span style={{
-                        fontFamily:"'Orbitron',sans-serif",fontSize:10,letterSpacing:2,
-                        color:"#fff",background:`linear-gradient(90deg,${edu.color},${edu.colorB})`,
-                        borderRadius:20,padding:"4px 14px",boxShadow:`0 0 12px ${edu.color}44`,textTransform:"uppercase",
-                      }}>{edu.type}</span>
-                      <div style={{display:"flex",alignItems:"center",gap:6}}>
-                        <span style={{fontSize:13}}>📅</span>
-                        <span style={{fontFamily:"'Orbitron',sans-serif",fontSize:11,color:"rgba(255,255,255,.55)",letterSpacing:1}}>{edu.year}</span>
-                      </div>
-                    </div>
-
-                    {/* degree title */}
-                    <h3 style={{fontFamily:"'Orbitron',sans-serif",fontSize:"clamp(1rem,2.5vw,1.3rem)",fontWeight:700,color:"#fff",margin:"0 0 8px",letterSpacing:.8}}>
-                      {edu.degree}
-                      {edu.field && <span style={{color:"rgba(255,255,255,.55)",fontWeight:400,fontSize:"clamp(.85rem,2vw,1.05rem)"}}> in {edu.field}</span>}
-                    </h3>
-
-                    {/* institution */}
-                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:16}}>
-                      <span style={{fontSize:13}}>📍</span>
-                      <span style={{fontFamily:"'Rajdhani',sans-serif",fontSize:"clamp(.88rem,2vw,1rem)",color:`${edu.color}cc`,fontWeight:600,letterSpacing:.5}}>
-                        {edu.institution}
-                      </span>
-                      {edu.university && (
-                        <span style={{fontFamily:"'Rajdhani',sans-serif",fontSize:13,color:"rgba(255,255,255,.35)",letterSpacing:.5}}>({edu.university})</span>
-                      )}
-                    </div>
-
-                    {/* progress bar */}
-                    <div style={{width:"100%",height:4,borderRadius:4,background:"rgba(255,255,255,.07)",marginBottom:14,overflow:"hidden"}}>
-                      <div style={{
-                        height:"100%",borderRadius:4,
-                        background:`linear-gradient(90deg,${edu.color},${edu.colorB})`,
-                        boxShadow:`0 0 8px ${edu.color}88`,
-                        animation:vis?`barGrow 1.4s cubic-bezier(.23,1,.32,1) ${.6+index*.2}s forwards`:"none",
-                      }}/>
-                    </div>
-
-                    {/* tags */}
-                    <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
-                      {edu.tags.map((tag,ti)=>(
-                        <span key={ti} className="tag-chip" style={{
-                          fontFamily:"'Rajdhani',sans-serif",fontWeight:600,fontSize:12,letterSpacing:.8,
-                          color:`${edu.color}cc`,
-                          background:`${edu.color}10`,
-                          border:`1px solid ${edu.color}28`,
-                          borderRadius:5,padding:"3px 12px",textTransform:"uppercase",cursor:"default",
-                        }}>{tag}</span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+          {/* Contact */}
+          <div>
+            <p className="ft-section-title">Contact</p>
+            <div className="flex flex-col gap-1">
+              <a href="mailto:shahshahid121212@gmail.com" className="ft-contact-link">
+                <Mail className="w-4 h-4 text-indigo-400 flex-shrink-0" />
+                <span className="truncate text-xs">shahshahid121212@gmail.com</span>
+              </a>
+              <a href="tel:+918948681079" className="ft-contact-link">
+                <Phone className="w-4 h-4 text-cyan-400 flex-shrink-0" />
+                +91 89486 81079
+              </a>
+              <div className="ft-contact-link cursor-default">
+                <MapPin className="w-4 h-4 text-pink-400 flex-shrink-0" />
+                India 🇮🇳
               </div>
             </div>
-          ))}
-        </div>
+          </div>
 
-        {/* ── Stats ── */}
-        <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:18,opacity:vis?1:0,animation:vis?"fadeUp .7s ease .6s both":"none"}}>
-          <div style={{height:1,flex:1,background:"rgba(99,102,241,.2)"}}/>
-          <span style={{fontFamily:"'Orbitron',sans-serif",fontSize:9,color:"rgba(99,102,241,.7)",letterSpacing:3,textTransform:"uppercase"}}>Academic Stats</span>
-          <div style={{width:7,height:7,borderRadius:"50%",background:"#818cf8",boxShadow:"0 0 8px #818cf8",animation:"blink 1.4s ease-in-out infinite"}}/>
-          <div style={{height:1,flex:1,background:"rgba(99,102,241,.2)"}}/>
-        </div>
-
-        <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14,opacity:vis?1:0,animation:vis?"fadeUp .8s ease .72s both":"none"}}>
-          {STATS.map((s,i)=>(
-            <div
-              key={i}
-              className="stat-pill"
-              onMouseEnter={()=>setHovStat(i)}
-              onMouseLeave={()=>setHovStat(null)}
-              style={{
-                background:hovStat===i?"linear-gradient(135deg,rgba(99,102,241,.18),rgba(139,92,246,.1))":"linear-gradient(135deg,rgba(10,14,40,.96),rgba(6,10,28,.99))",
-                borderRadius:14,
-                border:`1px solid ${hovStat===i?`${s.color}55`:"rgba(99,102,241,.18)"}`,
-                padding:"22px 14px",textAlign:"center",cursor:"default",
-                boxShadow:hovStat===i?`0 0 24px ${s.color}25,0 14px 40px rgba(0,0,0,.5)`:"0 8px 28px rgba(0,0,0,.4)",
-              }}
-            >
-              <div style={{fontSize:22,marginBottom:6}}>{s.icon}</div>
-              <div style={{fontFamily:"'Orbitron',sans-serif",fontSize:"clamp(1.4rem,4vw,2rem)",fontWeight:900,color:hovStat===i?s.color:"#fff",marginBottom:4}}>
-                {s.value}
-              </div>
-              <div style={{fontFamily:"'Rajdhani',sans-serif",fontSize:12,color:"rgba(255,255,255,.38)",letterSpacing:2,textTransform:"uppercase"}}>{s.label}</div>
+          {/* Social */}
+          <div>
+            <p className="ft-section-title">Find Me On</p>
+            <div className="flex flex-col gap-2">
+              {socials.map((s, i) => (
+                <a
+                  key={i} href={s.href} target="_blank" rel="noopener noreferrer"
+                  className="ft-social"
+                  style={{ "--hover-color": s.color }}
+                  onMouseEnter={e => {
+                    e.currentTarget.style.borderColor = s.color + "50";
+                    e.currentTarget.style.boxShadow = `0 4px 20px ${s.color}25`;
+                    e.currentTarget.style.color = "#fff";
+                  }}
+                  onMouseLeave={e => {
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.color = "#cbd5e1";
+                  }}
+                >
+                  <span style={{ color: s.color }}>{s.icon}</span>
+                  {s.label}
+                  <ArrowUpRight className="w-3 h-3 ml-auto opacity-40" />
+                </a>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
 
-        {/* ── HUD footer ── */}
-        <div style={{marginTop:26,display:"flex",justifyContent:"center",gap:24,flexWrap:"wrap",opacity:vis?1:0,animation:vis?"fadeUp .7s ease .9s both":"none"}}>
-          {[["RECORDS","02"],["FIELD","ELECTRONICS"],["STATUS","CERTIFIED"]].map(([k,v])=>(
-            <div key={k} style={{display:"flex",gap:6,alignItems:"center"}}>
-              <span style={{fontFamily:"'Orbitron',sans-serif",fontSize:9,color:"rgba(255,255,255,.22)",letterSpacing:2}}>{k}:</span>
-              <span style={{fontFamily:"'Orbitron',sans-serif",fontSize:9,color:"rgba(99,102,241,.7)",letterSpacing:2}}>{v}</span>
-            </div>
-          ))}
+        <div className="ft-divider" />
+
+        {/* ── BOTTOM BAR ── */}
+        <div className={`ft-revealed flex flex-col sm:flex-row items-center justify-between gap-4`}
+          style={{ animationDelay: "0.4s" }}>
+          <p className="text-slate-600 text-xs">
+            © {new Date().getFullYear()} Shahid Shah. Built with{" "}
+            <Heart className="w-3 h-3 inline text-pink-500 mx-0.5" />
+            using Next.js &amp; TailwindCSS
+          </p>
+
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 ft-blink" />
+            <span className="text-emerald-500 text-xs font-semibold tracking-widest uppercase">
+              System Active
+            </span>
+          </div>
+
+          <a
+            href="#"
+            onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+            className="flex items-center gap-2 text-xs text-slate-500 hover:text-white transition-colors duration-200 group"
+          >
+            Back to top
+            <span className="w-6 h-6 rounded-lg border border-white/10 flex items-center justify-center group-hover:border-indigo-500/50 transition-colors">
+              <ArrowUpRight className="w-3 h-3 -rotate-45" />
+            </span>
+          </a>
         </div>
       </div>
-    </section>
+    </footer>
   );
 }

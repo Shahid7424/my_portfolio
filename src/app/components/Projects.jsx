@@ -77,7 +77,49 @@ const projects = [
   },
 ];
 
-/* ─── 3-D Tilt Card ─────────────────────────────────────────────────────── */
+/* ── All CSS scoped with "pj-" prefix (pj = projects) ── */
+const PROJECTS_STYLES = `
+  @keyframes pj-marquee {
+    0%   { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .pj-track {
+    display: flex;
+    gap: 24px;
+    width: max-content;
+    animation: pj-marquee 42s linear infinite;
+  }
+  .pj-track:hover { animation-play-state: paused; }
+  .pj-wrapper {
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+  }
+  .pj-shimmer-sweep {
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%);
+    animation: pj-sweep 2.6s linear infinite;
+  }
+  @keyframes pj-sweep {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(200%); }
+  }
+  .pj-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    animation: pj-orbFloat 16s ease-in-out infinite alternate;
+  }
+  @keyframes pj-orbFloat {
+    from { transform: translate(0,0) scale(1); }
+    to   { transform: translate(40px,-28px) scale(1.18); }
+  }
+  @keyframes pj-pulseDot {
+    0%,100% { opacity:.4; transform:scale(1); }
+    50%     { opacity:1;  transform:scale(1.35); }
+  }
+  .pj-pulse-dot { animation: pj-pulseDot 2s ease-in-out infinite; }
+`;
+
 function ProjectCard({ project }) {
   const cardRef = useRef(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
@@ -104,19 +146,16 @@ function ProjectCard({ project }) {
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => { setTilt({ x: 0, y: 0 }); setHovered(false); }}
       style={{
-        width: 340,
-        flexShrink: 0,
+        width: 340, flexShrink: 0,
         transform: hovered
           ? `perspective(900px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale3d(1.05,1.05,1.05)`
           : "perspective(900px) rotateX(0) rotateY(0) scale3d(1,1,1)",
         transition: hovered ? "transform 0.08s ease-out" : "transform 0.55s cubic-bezier(.03,.98,.52,.99)",
-        willChange: "transform",
-        zIndex: hovered ? 50 : 1,
-        position: "relative",
+        willChange: "transform", zIndex: hovered ? 50 : 1, position: "relative",
       }}
     >
       <div
-        className="relative rounded-2xl overflow-hidden border border-white/10 flex flex-col" id="projects"
+        className="relative rounded-2xl overflow-hidden border border-white/10 flex flex-col"
         style={{
           height: 520,
           background: "linear-gradient(145deg,rgba(14,14,30,0.95),rgba(8,8,22,0.98))",
@@ -126,126 +165,88 @@ function ProjectCard({ project }) {
           transition: "box-shadow 0.4s ease",
         }}
       >
-        {/* Mouse-follow shimmer */}
-        <div
-          className="absolute inset-0 pointer-events-none"
+        <div className="absolute inset-0 pointer-events-none"
           style={{
-            opacity: hovered ? 1 : 0,
-            transition: "opacity 0.3s",
+            opacity: hovered ? 1 : 0, transition: "opacity 0.3s",
             background: `radial-gradient(circle at ${shimmer.x}% ${shimmer.y}%, ${meta.glow}28 0%, transparent 65%)`,
-          }}
-        />
+          }} />
 
-        {/* Top gradient bar with shimmer sweep */}
         <div className={`h-1.5 w-full bg-gradient-to-r ${meta.gradient} relative overflow-hidden flex-shrink-0`}>
-          <div className="absolute inset-0 shimmer-sweep" />
+          <div className="absolute inset-0 pj-shimmer-sweep" />
         </div>
 
-        {/* Background glow orb */}
-        <div
-          className="absolute -top-20 -right-20 w-56 h-56 rounded-full blur-3xl pointer-events-none"
+        <div className="absolute -top-20 -right-20 w-56 h-56 rounded-full blur-3xl pointer-events-none"
           style={{
             background: `radial-gradient(circle,${meta.glow},transparent)`,
-            opacity: hovered ? 0.3 : 0.12,
-            transition: "opacity 0.4s",
-          }}
-        />
+            opacity: hovered ? 0.3 : 0.12, transition: "opacity 0.4s",
+          }} />
 
         <div className="p-6 flex flex-col flex-grow relative z-10 overflow-hidden">
-          {/* Header row */}
           <div className="flex items-start justify-between mb-4">
-            <div
-              className={`p-2.5 rounded-xl bg-gradient-to-br ${meta.gradient}`}
-              style={{ boxShadow: `0 4px 16px ${meta.glow}55` }}
-            >
+            <div className={`p-2.5 rounded-xl bg-gradient-to-br ${meta.gradient}`}
+              style={{ boxShadow: `0 4px 16px ${meta.glow}55` }}>
               <Icon className="w-5 h-5 text-white" />
             </div>
-            <span
-              className="text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full border"
-              style={{ background: `${meta.glow}18`, borderColor: `${meta.glow}40`, color: meta.glow }}
-            >
+            <span className="text-xs font-bold tracking-widest uppercase px-3 py-1 rounded-full border"
+              style={{ background: `${meta.glow}18`, borderColor: `${meta.glow}40`, color: meta.glow }}>
               {project.category}
             </span>
           </div>
 
-          {/* Title */}
-          <h3
-            className="text-lg font-black text-white mb-2 leading-tight"
-            style={{ fontFamily: "'Syne', sans-serif" }}
-          >
+          <h3 className="text-lg font-black text-white mb-2 leading-tight"
+            style={{ fontFamily: "var(--font-syne), 'Syne', sans-serif" }}>
             {project.title}
           </h3>
 
-          {/* Description */}
-          <p
-            className="text-slate-400 text-sm leading-relaxed mb-4"
+          <p className="text-slate-400 text-sm leading-relaxed mb-4"
             style={{
-              WebkitLineClamp: 2,
-              display: "-webkit-box",
-              WebkitBoxOrient: "vertical",
-              overflow: "hidden",
-            }}
-          >
+              WebkitLineClamp: 2, display: "-webkit-box",
+              WebkitBoxOrient: "vertical", overflow: "hidden",
+            }}>
             {project.description}
           </p>
 
-          {/* Tech stack */}
           <div className="mb-4">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Stack</p>
             <div className="flex flex-wrap gap-1.5">
               {project.technologies.map((t, i) => (
-                <span
-                  key={i}
-                  className="px-2.5 py-0.5 rounded-full text-xs font-medium border"
-                  style={{ background: `${meta.glow}12`, borderColor: `${meta.glow}30`, color: "#cbd5e1" }}
-                >
+                <span key={i} className="px-2.5 py-0.5 rounded-full text-xs font-medium border"
+                  style={{ background: `${meta.glow}12`, borderColor: `${meta.glow}30`, color: "#cbd5e1" }}>
                   {t}
                 </span>
               ))}
             </div>
           </div>
 
-          {/* Features */}
           <div className="flex-grow">
             <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Features</p>
             <ul className="space-y-1.5">
               {project.features.slice(0, 4).map((f, i) => (
                 <li key={i} className="flex items-center gap-2 text-sm text-slate-300">
-                  <span
-                    className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                    style={{ background: meta.glow, boxShadow: `0 0 6px ${meta.glow}` }}
-                  />
+                  <span className="w-1.5 h-1.5 rounded-full flex-shrink-0"
+                    style={{ background: meta.glow, boxShadow: `0 0 6px ${meta.glow}` }} />
                   {f}
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* CTA buttons */}
           <div className="flex gap-3 mt-5">
             {project.githubUrl !== "#" && (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              <a href={project.githubUrl} target="_blank" rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white border border-white/10 hover:border-white/30 hover:bg-white/10 transition-all duration-200"
-              >
+                className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white border border-white/10 hover:border-white/30 hover:bg-white/10 transition-all duration-200">
                 <Github className="w-4 h-4" /> Code
               </a>
             )}
             {project.liveUrl && project.liveUrl !== "#" && (
-              <a
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              <a href={project.liveUrl} target="_blank" rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
                 className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white flex-1 justify-center transition-all duration-200"
                 style={{
                   background: `linear-gradient(135deg,${meta.glow}cc,${meta.glow}88)`,
                   boxShadow: hovered ? `0 4px 20px ${meta.glow}60` : "none",
-                }}
-              >
+                }}>
                 <ExternalLink className="w-4 h-4" /> Live Demo
               </a>
             )}
@@ -256,144 +257,59 @@ function ProjectCard({ project }) {
   );
 }
 
-/* ─── Main Export ────────────────────────────────────────────────────────── */
 export default function Projects() {
-  // Duplicate the array for seamless infinite loop
   const allCards = [...projects, ...projects];
 
   return (
     <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800;900&family=DM+Sans:wght@300;400;500;600&display=swap');
-
-        /* ── Infinite horizontal scroll ── */
-        @keyframes marquee {
-          0%   { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .marquee-track {
-          display: flex;
-          gap: 24px;
-          width: max-content;
-          animation: marquee 42s linear infinite;
-        }
-        .marquee-track:hover {
-          animation-play-state: paused;
-        }
-
-        /* ── Edge fade masks ── */
-        .marquee-wrapper {
-          -webkit-mask-image: linear-gradient(
-            to right,
-            transparent 0%,
-            black 8%,
-            black 92%,
-            transparent 100%
-          );
-          mask-image: linear-gradient(
-            to right,
-            transparent 0%,
-            black 8%,
-            black 92%,
-            transparent 100%
-          );
-        }
-
-        /* ── Shimmer sweep on top bar ── */
-        .shimmer-sweep {
-          background: linear-gradient(
-            90deg,
-            transparent 0%,
-            rgba(255,255,255,0.5) 50%,
-            transparent 100%
-          );
-          animation: sweep 2.6s linear infinite;
-        }
-        @keyframes sweep {
-          from { transform: translateX(-100%); }
-          to   { transform: translateX(200%); }
-        }
-
-        /* ── Ambient orbs ── */
-        .bg-orb {
-          position: absolute;
-          border-radius: 50%;
-          filter: blur(90px);
-          pointer-events: none;
-          animation: orbFloat 16s ease-in-out infinite alternate;
-        }
-        @keyframes orbFloat {
-          from { transform: translate(0,0) scale(1); }
-          to   { transform: translate(40px,-28px) scale(1.18); }
-        }
-
-        /* ── Pulse dot ── */
-        @keyframes pulseDot {
-          0%,100% { opacity:.4; transform:scale(1); }
-          50%      { opacity:1;  transform:scale(1.35); }
-        }
-        .pulse-dot { animation: pulseDot 2s ease-in-out infinite; }
-      `}</style>
+      <style dangerouslySetInnerHTML={{ __html: PROJECTS_STYLES }} />
 
       <section
+        id="projects"
         className="relative py-20 overflow-hidden"
         style={{
           background: "linear-gradient(135deg,#020817 0%,#0a0f1e 55%,#050c1a 100%)",
-          fontFamily: "'DM Sans', sans-serif",
+          fontFamily: "var(--font-dm-sans), 'DM Sans', sans-serif",
         }}
       >
-        {/* Ambient background orbs */}
-        <div className="bg-orb" style={{ width: 460, height: 460, background: "#7c3aed30", top: "-12%", left: "-6%" }} />
-        <div className="bg-orb" style={{ width: 380, height: 380, background: "#0ea5e930", top: "55%", right: "-6%", animationDelay: "4s" }} />
-        <div className="bg-orb" style={{ width: 280, height: 280, background: "#d946ef25", top: "25%", left: "42%", animationDelay: "8s" }} />
+        <div className="pj-orb" style={{ width: 460, height: 460, background: "#7c3aed30", top: "-12%", left: "-6%" }} />
+        <div className="pj-orb" style={{ width: 380, height: 380, background: "#0ea5e930", top: "55%", right: "-6%", animationDelay: "4s" }} />
+        <div className="pj-orb" style={{ width: 280, height: 280, background: "#d946ef25", top: "25%", left: "42%", animationDelay: "8s" }} />
 
-        {/* Subtle dot grid */}
-        <div
-          className="absolute inset-0 pointer-events-none"
+        <div className="absolute inset-0 pointer-events-none"
           style={{
             opacity: 0.025,
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)",
+            backgroundImage: "linear-gradient(rgba(255,255,255,1) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,1) 1px,transparent 1px)",
             backgroundSize: "60px 60px",
-          }}
-        />
+          }} />
 
         <div className="relative z-10">
-          {/* ── Section header ── */}
           <div className="text-center mb-14 px-4">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/10 bg-white/5 mb-6 backdrop-blur-sm">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 pulse-dot" />
+              <span className="w-2 h-2 rounded-full bg-emerald-400 pj-pulse-dot" />
               <span className="text-sm text-slate-400 font-medium tracking-wide">Portfolio Showcase</span>
             </div>
-
-            <h2
-              className="text-5xl sm:text-6xl font-black text-white mb-5 leading-none tracking-tight"
-              style={{ fontFamily: "'Syne', sans-serif" }}
-            >
+            <h2 className="text-5xl sm:text-6xl font-black text-white mb-5 leading-none tracking-tight"
+              style={{ fontFamily: "var(--font-syne), 'Syne', sans-serif" }}>
               Featured{" "}
-              <span
-                className="bg-clip-text text-transparent"
-                style={{ backgroundImage: "linear-gradient(135deg,#818cf8,#c084fc,#f472b6)" }}
-              >
+              <span className="bg-clip-text text-transparent"
+                style={{ backgroundImage: "linear-gradient(135deg,#818cf8,#c084fc,#f472b6)" }}>
                 Projects
               </span>
             </h2>
-
             <p className="text-slate-400 text-lg max-w-xl mx-auto leading-relaxed">
               Innovative solutions crafted across full-stack, cloud infrastructure &amp; modern UX.
             </p>
           </div>
 
-          {/* ── Infinite auto-scroll marquee ── */}
-          <div className="marquee-wrapper overflow-hidden">
-            <div className="marquee-track py-6 px-3">
+          <div className="pj-wrapper overflow-hidden">
+            <div className="pj-track py-6 px-3">
               {allCards.map((project, i) => (
                 <ProjectCard key={i} project={project} />
               ))}
             </div>
           </div>
 
-          {/* ── Hint text ── */}
           <p className="text-center text-slate-600 text-xs mt-8 tracking-widest uppercase">
             ✦ Hover any card to pause &nbsp;·&nbsp; Click links to explore ✦
           </p>

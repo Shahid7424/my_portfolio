@@ -300,7 +300,7 @@ export default function Certifications() {
           0% { transform: translateY(-100%); }
           100% { transform: translateY(100vh); }
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+       
       `}</style>
 
       <section style={{
