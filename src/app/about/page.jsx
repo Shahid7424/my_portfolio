@@ -162,7 +162,7 @@ export default function About() {
 
               {/* bio text */}
               <p style={{fontFamily:"'Rajdhani',sans-serif",fontSize:"clamp(.95rem,2vw,1.08rem)",color:"rgba(255,255,255,.62)",lineHeight:1.75,margin:"0 0 18px",fontWeight:400}}>
-                I'm a passionate <span style={{color:"#818cf8",fontWeight:600}}>Frontend Developer</span> based in Pune, India, currently building production-grade applications at <span style={{color:"#06b6d4",fontWeight:600}}>AIN Software Solution</span>. I craft immersive, performant web experiences using React, Next.js and modern UI libraries — turning complex problems into clean, intuitive interfaces.
+                I'm a passionate <span style={{color:"#818cf8",fontWeight:600}}>Software Developer</span> based in Pune, India, currently building production-grade applications at <span style={{color:"#06b6d4",fontWeight:600}}>AIN Software Solution</span>. I craft immersive, performant web experiences using React, Next.js and modern UI libraries — turning complex problems into clean, intuitive interfaces.
               </p>
               <p style={{fontFamily:"'Rajdhani',sans-serif",fontSize:"clamp(.9rem,2vw,1.02rem)",color:"rgba(255,255,255,.5)",lineHeight:1.75,margin:0}}>
                 Beyond my day job I take on <span style={{color:"#10b981",fontWeight:600}}>freelance projects</span> — from MVPs for startups to performance audits and AWS deployments. If you have an idea, let's build it together.
