@@ -389,7 +389,7 @@ export default function Experience() {
                   <span style={{ fontFamily: "'Orbitron', sans-serif", fontSize: 10, color: "#00ff88", letterSpacing: 2 }}>ACTIVE</span>
                 </div>
                 <div style={{ fontFamily: "'Rajdhani', sans-serif", fontSize: 13, color: "rgba(255,255,255,0.4)", letterSpacing: 1 }}>
-                  FEB 2024 — PRESENT &nbsp;·&nbsp; PUNE, IND
+                  FEB 2023 — PRESENT &nbsp;·&nbsp; PUNE, IND
                 </div>
               </div>
             </div>
