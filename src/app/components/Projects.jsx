@@ -75,6 +75,15 @@ const projects = [
     liveUrl: "https://travelocare.com/",
     category: "Travel Tech",
   },
+  {
+  title: "ShopEase",
+  description: "Next-gen e-commerce marketplace with multi-category shopping, advanced filters, wishlist management, and a seamless multi-gateway checkout experience.",
+  technologies: ["Next.js", "React", "TailwindCSS", "Vercel"],
+  features: ["Multi-category product catalog", "Advanced price & rating filters", "Cart & wishlist management", "Multi-gateway secure payments"],
+  githubUrl: "https://github.com/Shahid7424/ecommerce-app.git",
+  liveUrl: "https://ecommerce-app-zeta-ashen.vercel.app/",
+  category: "E-Commerce",
+},
 ];
 
 /* ── All CSS scoped with "pj-" prefix (pj = projects) ── */
